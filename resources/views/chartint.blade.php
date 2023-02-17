@@ -38,6 +38,11 @@
       <input type="datetime-local" class="form-control" id="dateTo" name="dateTo">
       <button id="dateButton">Set Date</button>
     </div>
+    <div>
+      <label for="search">Search For Flight</label>
+      <input type="text" class="form-control" id="search" name="search">
+      <button id="searchButton">Search</button>
+    </div>
     <div class="block" id="chartWrapper">
       <div id="flightData"></div>
       <div id="newFlightData"></div>

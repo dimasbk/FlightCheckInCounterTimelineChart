@@ -27,13 +27,13 @@ $(document).ready(function () {
     var options = {
         groupOrder: "id",
         orientation: { axis: "top" },
-        //maxHeight: "75%",
+        maxHeight: "75%",
         verticalScroll: true,
         margin: {
             item: { horizontal: 0, vertical: 0 },
         },
         zoomKey: "ctrlKey",
-        autoResize: false,
+        //autoResize: false,
     };
 
     document.getElementById("dateButton").onclick = function () {
@@ -57,6 +57,53 @@ $(document).ready(function () {
     };
     console.log(options);
     var timeline = new vis.Timeline(container, items, groups, options);
+
+    document.getElementById("searchButton").onclick = function () {
+        let searchParam = $("#search").val();
+        from = document.getElementById("dateFrom").value;
+        to = document.getElementById("dateTo").value;
+        let dateFrom = new Date(from);
+        let dateTo = new Date(to);
+        var timestampFrom = parseInt((dateFrom.getTime() / 1000).toFixed(0));
+        var timestampTo = parseInt((dateTo.getTime() / 1000).toFixed(0));
+        $.ajax({
+            type: "GET",
+            url: "/flight/data/search",
+            headers: {
+                Accept: "application/json",
+            },
+            data: {
+                param: searchParam,
+                type: "Internasional",
+                from: timestampFrom,
+                to: timestampTo,
+            },
+            success: function (result) {
+                console.log(result);
+
+                let resultArray = [];
+                result.forEach(function (row) {
+                    //resultArray.push(row.)
+                    desk_id = row.id_checkin_desk;
+                    let deskArray = desk_id.split(",").map(Number);
+                    deskArray.forEach(function (data) {
+                        resultArray.push(
+                            row.id_schedule + row.flight_number + data
+                        );
+                    });
+                });
+                if (!resultArray.length) {
+                    alert("Data Tidak Ditemukan");
+                } else {
+                    resultArray.toString();
+                    timeline.focus(resultArray);
+                }
+            },
+            error: function (error) {
+                console.log(error);
+            },
+        });
+    };
 
     function Chart(data) {
         var dataCounter = data.counter;
@@ -150,10 +197,10 @@ $(document).ready(function () {
             if (properties.item) {
                 // An item was clicked, get the item from dataset
                 const item = items.get(properties.item);
-                console.log(item.id);
+                console.log(item.content);
                 $.ajax({
                     type: "GET",
-                    url: "/flight/data/modal/" + item.id,
+                    url: "/flight/data/modal/" + item.content,
                     headers: {
                         Accept: "application/json",
                     },

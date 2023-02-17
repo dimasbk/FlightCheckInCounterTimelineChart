@@ -22,6 +22,7 @@ Route::get('/flight/internasional', [ChartController::class, 'internasional']);
 Route::get('/flight/add/domestik', [ChartController::class, 'addDataDomestik']);
 Route::get('/flight/add/internasional', [ChartController::class, 'addDataInternasional']);
 Route::post('/flight/insert', [ChartController::class, 'insert']);
+Route::get('/flight/data/search', [ChartController::class, 'search']);
 //Route::get('/flight/desk', [ChartController::class, 'desk']);
 Route::get('/flight/data/counter', [ChartController::class, 'counter']);
 Route::get('/flight/data/modal/{id}', [ChartController::class, 'modal']);

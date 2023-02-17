@@ -78,22 +78,27 @@ class ChartController extends Controller
         $flightData = FlightModel::join('tb_airline', 'tb_schedule.id_airline', '=', 'tb_airline.id_airline')
             ->join('tb_airport', 'tb_schedule.id_destination', '=', 'tb_airport.id_aiport')
             ->join('tb_checkin_desk', 'tb_schedule.id_checkin_desk', '=', 'tb_checkin_desk.id')
-            ->where("id_schedule", $id)
+            ->where("flight_number", $id)
             ->get()
             ->toArray();
 
         return $flightData;
     }
+    public function search(Request $request)
+    {
+        $from = date('Y-m-d H:i:s', $request->from);
+
+        $to = date('Y-m-d H:i:s', $request->to);
+        $data = FlightModel::select('id_schedule', 'flight_number', 'id_checkin_desk')
+            ->where('flight_number', $request->param)->where('flightType', $request->type)->whereBetween('schedule_time', [$from, $to])->get();
+
+        return $data;
+    }
 
     public function flightDataDomestik(Request $request)
     {
 
-        /*
-        $startTime = new \DateTime('midnight');
-        $from = $startTime->format('Y-m-d H:i:s');
-        $endTime = new \DateTime('midnight');
-        $to = $endTime->setTime(23, 59, 00)->format('Y-m-d H:i:s');
-        */
+
         $from = date('Y-m-d H:i:s', $request->from);
 
         $to = date('Y-m-d H:i:s', $request->to);
