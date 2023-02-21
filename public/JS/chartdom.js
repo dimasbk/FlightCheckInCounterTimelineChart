@@ -1,25 +1,4 @@
 $(document).ready(function () {
-    function call(from, to) {
-        $.ajax({
-            type: "GET",
-            url: "/flight/data/domestik",
-            headers: {
-                Accept: "application/json",
-            },
-            data: {
-                from: from,
-                to: to,
-            },
-            success: function (internationalData) {
-                console.log(internationalData);
-                Chart(internationalData);
-            },
-            error: function (error) {
-                console.log(error);
-            },
-        });
-    }
-
     var container = document.getElementById("newFlightData");
     var output = new vis.DataSet();
     var groups = new vis.DataSet();
@@ -32,7 +11,7 @@ $(document).ready(function () {
         margin: {
             item: { horizontal: 0, vertical: 0 },
         },
-        zoomKey: "ctrlKey",
+        zoomKey: "shiftKey",
     };
 
     document.getElementById("dateButton").onclick = function () {
@@ -54,9 +33,8 @@ $(document).ready(function () {
         call(timestampFrom, timestampTo);
     };
 
-    console.log(options);
+    //console.log(options);
     var timeline = new vis.Timeline(container, items, groups, options);
-    timeline.redraw();
 
     document.getElementById("searchButton").onclick = function () {
         let searchParam = $("#search").val();
@@ -80,22 +58,23 @@ $(document).ready(function () {
                 to: timestampTo,
             },
             success: function (result) {
-                console.log(result);
                 let resultArray = [];
                 result.forEach(function (row) {
                     //resultArray.push(row.)
                     desk_id = row.id_checkin_desk;
-                    let deskArray = desk_id.split(",").map(Number);
-                    deskArray.forEach(function (data) {
-                        resultArray.push(
-                            row.id_schedule + row.flight_number + data
-                        );
+                    var deskArray = checkinDesk.split(",").map(Number);
+                    let number = 10;
+                    deskArray.forEach(function () {
+                        let itemId = `${row.id_schedule}${number}`;
+                        resultArray.push(itemId);
+                        number++;
                     });
                 });
                 if (!resultArray.length) {
                     alert("Data Tidak Ditemukan");
                 } else {
                     resultArray.toString();
+                    console.log(resultArray);
                     timeline.focus(resultArray);
                 }
             },
@@ -104,6 +83,28 @@ $(document).ready(function () {
             },
         });
     };
+
+    function call(from, to) {
+        $.ajax({
+            type: "GET",
+            url: "/flight/data/domestik",
+            headers: {
+                Accept: "application/json",
+            },
+            data: {
+                from: from,
+                to: to,
+            },
+            success: function (internationalData) {
+                //console.log(internationalData);
+                Chart(internationalData);
+                timeline.redraw();
+            },
+            error: function (error) {
+                console.log(error);
+            },
+        });
+    }
 
     function Chart(data) {
         var dataCounter = data.counter;
@@ -126,9 +127,11 @@ $(document).ready(function () {
             end = new Date(timeEnd.setMinutes(timeEnd.getMinutes() - 30));
             checkinDesk = row.id_checkin_desk;
             var checkinDeskArray = checkinDesk.split(",").map(Number);
+            let number = 10;
             checkinDeskArray.forEach(function (itemData) {
+                let itemId = `${row.id_schedule}${number}`;
                 items.add({
-                    id: row.id_schedule + row.flight_number + itemData,
+                    id: itemId,
                     group: itemData,
                     content: row.flight_number,
                     start: start,
@@ -136,13 +139,14 @@ $(document).ready(function () {
                     style:
                         "background-color:" + row.chartColor + "; color: white",
                 });
+                number++;
             });
 
             var desk = checkinDesk.split(",").map(Number);
             deskFirst = desk[0];
             deskLast = desk[desk.length - 1];
             deskId = deskFirst + "-" + deskLast;
-            console.log(deskId);
+            //console.log(deskId);
             //console.log(desk);
             output.add({
                 flightNumber: row.flight_number,
@@ -156,7 +160,7 @@ $(document).ready(function () {
             });
         });
 
-        console.log(items);
+        //console.log(items);
         // create visualization
 
         let itemsArray = [];
@@ -175,7 +179,7 @@ $(document).ready(function () {
                 })
                 .join("\n");
 
-            console.log(array1);
+            //console.log(array1);
 
             let currentDate = new Date().toJSON().slice(0, 10);
             const blob = new Blob([array1], {
@@ -197,12 +201,17 @@ $(document).ready(function () {
             if (properties.item) {
                 // An item was clicked, get the item from dataset
                 const item = items.get(properties.item);
-                console.log(item.content);
+                let x = item.id;
+                const newNum = Number(x.toString().slice(0, -2));
+                console.log(newNum);
                 $.ajax({
                     type: "GET",
-                    url: "/flight/data/modal/" + item.content,
+                    url: "/flight/data/modal",
                     headers: {
                         Accept: "application/json",
+                    },
+                    data: {
+                        id: newNum,
                     },
                     success: function (data) {
                         //console.log(data);

@@ -7,7 +7,8 @@ use App\Models\FlightModel;
 use App\Models\CheckinDeskModel;
 use App\Models\AirlineModel;
 use App\Models\AirportCodeModel;
-use Carbon\Carbon;
+use App\Imports\ImportFlightData;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ChartController extends Controller
 {
@@ -66,19 +67,30 @@ class ChartController extends Controller
         }
     }
 
+    public function desk(Request $request)
+    {
+        $first = $request->first;
+        $last = $request->last;
 
+        $firstDesk = CheckinDeskModel::where('id', $first)->value('checkin_desk');
+        $lastDesk = CheckinDeskModel::where('id', $last)->value('checkin_desk');
+
+        $data = compact(['firstDesk'], ['lastDesk']);
+
+        return $data;
+    }
     public function counter()
     {
         $counter = CheckinDeskModel::get();
         return $counter;
     }
 
-    public function modal($id)
+    public function modal(Request $request)
     {
         $flightData = FlightModel::join('tb_airline', 'tb_schedule.id_airline', '=', 'tb_airline.id_airline')
             ->join('tb_airport', 'tb_schedule.id_destination', '=', 'tb_airport.id_aiport')
             ->join('tb_checkin_desk', 'tb_schedule.id_checkin_desk', '=', 'tb_checkin_desk.id')
-            ->where("flight_number", $id)
+            ->where("id_schedule", $request->id)
             ->get()
             ->toArray();
 
@@ -138,5 +150,13 @@ class ChartController extends Controller
         $counter = CheckinDeskModel::where('type', 'Internasional')->get();
         $data = compact(['flightData', ['counter']]);
         return $data;
+    }
+
+    public function import(Request $request)
+    {
+
+        Excel::import(new ImportFlightData, $request->file('file'));
+        return back()->with('alert', 'hello');
+        ;
     }
 }

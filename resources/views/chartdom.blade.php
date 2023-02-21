@@ -12,6 +12,10 @@
       margin-top: 20px;
       margin-bottom: 10px;
     }
+
+    .interaction {
+      margin-top: 10px
+    }
   </style>
 </head>
 
@@ -27,20 +31,22 @@
       <li class="nav-item">
         <a href="/flight/add/domestik" class="btn">Add Data</a>
       </li>
+      <li>
+        <a id="downloadLink"></a>
+      </li>
     </ul>
-    <a class="btn" id="downloadLink"></a>
-    <div class="block">
 
-      <label for="dateFrom">Date From:</label>
-      <input type="datetime-local" class="form-control" id="dateFrom" name="dateFrom">
-      <label for="dateTo">Date To:</label>
-      <input type="datetime-local" class="form-control" id="dateTo" name="dateTo">
-      <button id="dateButton">Set Date</button>
+    <div class="block">
+      <label class="interaction" for="dateFrom">Date From:</label>
+      <input class="interaction" type="datetime-local" class="form-control" id="dateFrom" name="dateFrom"><br>
+      <label class="interaction" for="dateTo">Date To:</label>
+      <input class="interaction" type="datetime-local" class="form-control" id="dateTo" name="dateTo">
+      <button class="interaction" id="dateButton">Set Date</button>
     </div>
     <div>
-      <label for="search">Search For Flight</label>
-      <input type="text" class="form-control" id="search" name="search">
-      <button id="searchButton">Search</button>
+      <label class="interaction" for="search">Search For Flight</label>
+      <input class="interaction" type="text" class="form-control" id="search" name="search">
+      <button class="interaction" id="searchButton">Search</button>
     </div>
     <div class="block" id="chartWrapper">
       <div id="flightData"></div>

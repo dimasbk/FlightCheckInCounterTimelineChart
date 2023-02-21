@@ -11,7 +11,7 @@ $(document).ready(function () {
                 to: to,
             },
             success: function (internationalData) {
-                console.log(internationalData);
+                //console.log(internationalData);
                 Chart(internationalData);
             },
             error: function (error) {
@@ -55,7 +55,7 @@ $(document).ready(function () {
         call(timestampFrom, timestampTo);
         timeline.redraw();
     };
-    console.log(options);
+    //console.log(options);
     var timeline = new vis.Timeline(container, items, groups, options);
 
     document.getElementById("searchButton").onclick = function () {
@@ -79,17 +79,18 @@ $(document).ready(function () {
                 to: timestampTo,
             },
             success: function (result) {
-                console.log(result);
+                //console.log(result);
 
                 let resultArray = [];
                 result.forEach(function (row) {
                     //resultArray.push(row.)
                     desk_id = row.id_checkin_desk;
                     let deskArray = desk_id.split(",").map(Number);
-                    deskArray.forEach(function (data) {
-                        resultArray.push(
-                            row.id_schedule + row.flight_number + data
-                        );
+                    let number = 10;
+                    deskArray.forEach(function () {
+                        let itemId = `${row.id_schedule}${number}`;
+                        resultArray.push(itemId);
+                        number++;
                     });
                 });
                 if (!resultArray.length) {
@@ -105,9 +106,36 @@ $(document).ready(function () {
         });
     };
 
+    function getIntDesk(first, last) {
+        var firstDesk;
+        var lastDesk;
+        $.ajax({
+            async: false,
+            type: "GET",
+            url: "/flight/data/internasional/desk",
+            headers: {
+                Accept: "application/json",
+            },
+            data: {
+                first: first,
+                last: last,
+            },
+            success: function (data) {
+                firstDesk = data.firstDesk;
+                lastDesk = data.lastDesk;
+            },
+            error: function (error) {
+                console.log(error);
+            },
+        });
+
+        return [firstDesk, lastDesk];
+    }
+
     function Chart(data) {
         var dataCounter = data.counter;
         var dataSchedule = data.flightData;
+        //console.log(dataSchedule);
         dataCounter.forEach(function (row) {
             //console.log(row.schedule_time);
 
@@ -126,9 +154,11 @@ $(document).ready(function () {
             end = new Date(timeEnd.setMinutes(timeEnd.getMinutes() - 30));
             checkinDesk = row.id_checkin_desk;
             var checkinDeskArray = checkinDesk.split(",").map(Number);
+            let number = 10;
             checkinDeskArray.forEach(function (itemData) {
+                let itemId = `${row.id_schedule}${number}`;
                 items.add({
-                    id: row.id_schedule + row.flight_number + itemData,
+                    id: itemId,
                     group: itemData,
                     content: row.flight_number,
                     start: start,
@@ -136,12 +166,14 @@ $(document).ready(function () {
                     style:
                         "background-color:" + row.chartColor + "; color: white",
                 });
+                number++;
             });
 
             var desk = checkinDesk.split(",").map(Number);
             deskFirst = desk[0];
             deskLast = desk[desk.length - 1];
-            deskId = deskFirst + "-" + deskLast;
+            let deskData = getIntDesk(deskFirst, deskLast);
+            deskId = deskData[0] + "-" + deskData[1];
             console.log(deskId);
             //console.log(desk);
             output.add({
@@ -156,7 +188,7 @@ $(document).ready(function () {
             });
         });
 
-        console.log(items);
+        //console.log(items);
         // create visualization
 
         let itemsArray = [];
@@ -175,7 +207,7 @@ $(document).ready(function () {
                 })
                 .join("\n");
 
-            console.log(array1);
+            //console.log(array1);
 
             let currentDate = new Date().toJSON().slice(0, 10);
             const blob = new Blob([array1], {
@@ -197,12 +229,16 @@ $(document).ready(function () {
             if (properties.item) {
                 // An item was clicked, get the item from dataset
                 const item = items.get(properties.item);
-                console.log(item.content);
+                let x = item.id;
+                const newNum = Number(x.toString().slice(0, -2));
                 $.ajax({
                     type: "GET",
-                    url: "/flight/data/modal/" + item.content,
+                    url: "/flight/data/modal",
                     headers: {
                         Accept: "application/json",
+                    },
+                    data: {
+                        id: newNum,
                     },
                     success: function (data) {
                         //console.log(data);
