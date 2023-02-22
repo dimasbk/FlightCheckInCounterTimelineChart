@@ -16,6 +16,20 @@
     .interaction {
       margin-top: 10px
     }
+
+    .flightData {
+      display: block
+    }
+
+    .data {
+      display: inline
+    }
+
+    #chartWrapper {
+      overflow-x: scroll;
+      overflow-y: hidden;
+      width: 100%;
+    }
   </style>
 </head>
 
@@ -32,9 +46,37 @@
         <a href="/flight/add/domestik" class="btn">Add Data</a>
       </li>
       <li>
+        <a data-toggle="modal" data-target="#modalExport">
+          Export All Data
+        </a>
+      </li>
+      <li>
         <a id="downloadLink"></a>
       </li>
     </ul>
+
+    <div class="modal fade" id="modalExport" tabindex="-1" role="dialog" aria-labelledby="modalExportLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalExportLabel">Export All Data</h5>
+
+          </div>
+          <div class="modal-body">
+            <form action="/flight/add/export" method="POST" enctype="multipart/form-data">
+              @csrf
+              <div class="input-group mb-3">
+                <label for="schedule-time">Schedule Time:</label>
+                <input type="date" class="form-control" id="exportDate" name="exportDate">
+              </div>
+              <button class="btn btn-primary" type="submit">Download</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
 
     <div class="block">
       <label class="interaction" for="dateFrom">Date From:</label>
@@ -49,7 +91,6 @@
       <button class="interaction" id="searchButton">Search</button>
     </div>
     <div class="block" id="chartWrapper">
-      <div id="flightData"></div>
       <div id="newFlightData"></div>
     </div>
   </div>
@@ -109,20 +150,4 @@
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
   <script src="{{asset('JS')}}/chartdom.js"></script>
-  <style>
-    .flightData {
-      display: block
-    }
-
-    .data {
-      display: inline
-    }
-
-    #chartWrapper {
-      overflow-x: scroll;
-      overflow-y: hidden;
-      width: 100%;
-    }
-  </style>
-
 </body>

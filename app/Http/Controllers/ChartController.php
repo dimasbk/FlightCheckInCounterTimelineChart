@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportFlightData;
+use App\Exports\FlightExportDomestic;
 use Illuminate\Http\Request;
 use App\Models\FlightModel;
 use App\Models\CheckinDeskModel;
@@ -158,5 +160,58 @@ class ChartController extends Controller
         Excel::import(new ImportFlightData, $request->file('file'));
         return back()->with('alert', 'hello');
         ;
+    }
+
+    public function export(Request $request)
+    {
+        $resultDomestik = FlightModel::whereDate('schedule_time', $request->exportDate)->where('flightType', 'Domestik')
+            ->join('tb_airport', 'tb_schedule.id_destination', '=', 'tb_airport.id_aiport')
+            ->get()->toArray();
+
+        $arrayDomestik = [];
+        foreach ($resultDomestik as $hasil) {
+            $flightNumber = $hasil["flight_number"];
+            $destination = $hasil["airport_code"];
+            $airplaneType = $hasil["airplane_type"];
+            $scheduleTime = $hasil["schedule_time"];
+            $checkinDesk = $hasil["id_checkin_desk"];
+            $first = substr($checkinDesk, 0, 2);
+            $last = substr($checkinDesk, -2);
+            $firstDesk = CheckinDeskModel::where('id', $first)->value('checkin_desk');
+            $lastDesk = CheckinDeskModel::where('id', $last)->value('checkin_desk');
+            $desk = $firstDesk . "-" . $lastDesk;
+            $gate = $hasil["gate"];
+            $pax = $hasil["pax"];
+            $cic = $hasil["cic"];
+
+            array_push($arrayDomestik, [$flightNumber, $destination, $airplaneType, $scheduleTime, $desk, $gate, $pax, $cic]);
+        }
+
+        $resultInternasional = $resultDomestik = FlightModel::whereDate('schedule_time', $request->exportDate)->where('flightType', 'Internasional')
+            ->join('tb_airport', 'tb_schedule.id_destination', '=', 'tb_airport.id_aiport')
+            ->get()->toArray();
+
+        $arrayInternasional = [];
+        foreach ($resultInternasional as $hasil) {
+            $flightNumber = $hasil["flight_number"];
+            $destination = $hasil["airport_code"];
+            $airplaneType = $hasil["airplane_type"];
+            $scheduleTime = $hasil["schedule_time"];
+            $checkinDesk = $hasil["id_checkin_desk"];
+            $deskArray = explode(",", $checkinDesk);
+            $firstDesk = CheckinDeskModel::where('id', reset($deskArray))->value('checkin_desk');
+            $lastDesk = CheckinDeskModel::where('id', end($deskArray))->value('checkin_desk');
+            $desk = $firstDesk . "-" . $lastDesk;
+            $gate = $hasil["gate"];
+            $pax = $hasil["pax"];
+            $cic = $hasil["cic"];
+
+            array_push($arrayInternasional, [$flightNumber, $destination, $airplaneType, $scheduleTime, $desk, $gate, $pax, $cic]);
+        }
+
+        $exportDomestik = new FlightExportDomestic($arrayDomestik);
+        $export = new ExportFlightData($arrayDomestik, $arrayInternasional);
+
+        return Excel::download($export, 'FlightData' . $request->exportDate . '.xlsx');
     }
 }

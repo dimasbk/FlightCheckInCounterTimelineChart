@@ -31,11 +31,11 @@ class FlightImportInternational implements ToModel, WithStartRow, WithCalculated
         $airportCode = AirportCodeModel::where('airport_code', $row[1])->value('id_aiport');
         $checkinDesk = $row[9];
         $explodedID = explode("-", $checkinDesk);
-
         $array = [];
-        for ($i = $explodedID[0]; $i <= $explodedID[1]; $i++) {
-            $id = CheckinDeskModel::where('checkin_desk', $i)->value('id');
-            array_push($array, $id);
+        $idFirst = CheckinDeskModel::where('checkin_desk', $explodedID[0])->value('id');
+        $idLast = CheckinDeskModel::where('checkin_desk', $explodedID[1])->value('id');
+        for ($i = $idFirst; $i <= $idLast; $i++) {
+            array_push($array, $i);
         }
         $id_checkin_desk = implode(",", $array);
 

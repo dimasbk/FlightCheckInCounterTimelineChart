@@ -113,7 +113,9 @@
                             @csrf
                             <div class="input-group mb-3">
 
-                                <input type="file" name="file" class="form-control">
+                                <input type="file" name="file"
+                                    accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .csv "
+                                    class="form-control">
 
                             </div>
                             <button class="btn btn-primary" type="submit">Submit</button>

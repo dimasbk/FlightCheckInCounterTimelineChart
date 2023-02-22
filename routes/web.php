@@ -32,3 +32,4 @@ Route::get('/flight/data/domestik', [ChartController::class, 'flightDataDomestik
 Route::get('/flight/data/internasional', [ChartController::class, 'flightDataInternasional']);
 Route::get('/flight/data/internasional/desk', [ChartController::class, 'desk']);
 Route::post('/flight/add/import', [ChartController::class, 'import']);
+Route::post('/flight/add/export', [ChartController::class, 'export']);
