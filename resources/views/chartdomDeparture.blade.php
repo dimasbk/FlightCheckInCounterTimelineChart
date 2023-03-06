@@ -37,11 +37,16 @@
   <div class="container-fluid">
     <ul class="nav nav-tabs">
       <li class="nav-item">
-        <a class="nav-link active" href="#">Domestik</a>
+        <a class="nav-link" href="#">Departure Domestik</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/flight/internasional">Internasional</a>
+        <a class="nav-link" href="/flight/departure/internasional">Departure Internasional</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link " href="/flight/arrival/domestik">Arrival Domestik</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="/flight/arrival/internasional">Arrival Internasional</a>
       <li class="nav-item">
         <a href="/flight/add/domestik" class="btn">Add Data</a>
       </li>
@@ -79,6 +84,7 @@
     </div>
 
     <div class="block">
+      <h2>Domestic Departure</h2>
       <label class="interaction" for="dateFrom">Date From:</label>
       <input class="interaction" type="datetime-local" class="form-control" id="dateFrom" name="dateFrom"><br>
       <label class="interaction" for="dateTo">Date To:</label>
@@ -90,6 +96,7 @@
       <input class="interaction" type="text" class="form-control" id="search" name="search">
       <button class="interaction" id="searchButton">Search</button>
     </div>
+    <div><button id="pdf">Export to PDF</button></div>
     <div class="block" id="chartWrapper">
       <div id="newFlightData"></div>
     </div>
@@ -148,6 +155,9 @@
     </div>
   </div>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-  <script src="{{asset('JS')}}/chartdom.js"></script>
+  <script src="http://cdn.jsdelivr.net/g/filesaver.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dom-to-pdf@0.3.2/index.min.js"></script>
+  <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.0/jspdf.min.js"></script>
+  <script src="{{asset('JS')}}/DomestikDeparture.js"></script>
 </body>

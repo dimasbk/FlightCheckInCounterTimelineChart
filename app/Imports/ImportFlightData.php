@@ -10,8 +10,10 @@ class ImportFlightData implements WithMultipleSheets
     public function sheets(): array
     {
         return [
-            0 => new FlightImportInternational(),
-            1 => new FlightImportDomestic(),
+            0 => new DepartureImportInternational(),
+            1 => new DepartureImportDomestic(),
+            2 => new ArrivalImportInternational(),
+            3 => new ArrivalImportDomestic()
         ];
     }
 }

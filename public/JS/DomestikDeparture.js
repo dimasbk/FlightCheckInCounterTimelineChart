@@ -65,7 +65,7 @@ $(document).ready(function () {
                     var deskArray = checkinDesk.split(",").map(Number);
                     let number = 10;
                     deskArray.forEach(function () {
-                        let itemId = `${row.id_schedule}${number}`;
+                        let itemId = `${row.id_departure}${number}`;
                         resultArray.push(itemId);
                         number++;
                     });
@@ -95,9 +95,9 @@ $(document).ready(function () {
                 from: from,
                 to: to,
             },
-            success: function (internationalData) {
-                //console.log(internationalData);
-                Chart(internationalData);
+            success: function (domestikData) {
+                console.log(domestikData);
+                Chart(domestikData);
                 timeline.redraw();
             },
             error: function (error) {
@@ -110,26 +110,20 @@ $(document).ready(function () {
         var dataCounter = data.counter;
         var dataSchedule = data.flightData;
         dataCounter.forEach(function (row) {
-            //console.log(row.schedule_time);
-
             groups.add({ id: row.id, content: "Counter " + row.checkin_desk });
         });
-
-        // create a dataset with items
 
         dataSchedule.forEach(function (row) {
             timeStart = new Date(row.schedule_time);
             timeEnd = new Date(row.schedule_time);
-            //group = parseInt(row.checkin_desk);
-
             start = new Date(timeStart.setHours(timeStart.getHours() - 3));
-
             end = new Date(timeEnd.setMinutes(timeEnd.getMinutes() - 30));
             checkinDesk = row.id_checkin_desk;
             var checkinDeskArray = checkinDesk.split(",").map(Number);
             let number = 10;
+
             checkinDeskArray.forEach(function (itemData) {
-                let itemId = `${row.id_schedule}${number}`;
+                let itemId = `${row.id_departure}${number}`;
                 items.add({
                     id: itemId,
                     group: itemData,
@@ -146,8 +140,6 @@ $(document).ready(function () {
             deskFirst = desk[0];
             deskLast = desk[desk.length - 1];
             deskId = deskFirst + "-" + deskLast;
-            //console.log(deskId);
-            //console.log(desk);
             output.add({
                 flightNumber: row.flight_number,
                 destination: row.airport_code,
@@ -160,19 +152,14 @@ $(document).ready(function () {
             });
         });
 
-        //console.log(items);
-        // create visualization
-
         let itemsArray = [];
         itemsArray = output.get();
         if (itemsArray.length === 0) {
             const link = document.getElementById("downloadLink");
             link.removeAttribute("href");
-
             link.textContent = "No Data";
         } else {
             const array = [Object.keys(itemsArray[0])].concat(itemsArray);
-
             let array1 = array
                 .map((it) => {
                     return Object.values(it).toString();
@@ -193,8 +180,6 @@ $(document).ready(function () {
                 "FlightScheduleDomestik" + currentDate + ".csv"
             );
             link.textContent = "Export to CSV";
-
-            //document.querySelector("#download").append(link);
         }
 
         timeline.on("click", function (properties) {
@@ -206,7 +191,7 @@ $(document).ready(function () {
                 console.log(newNum);
                 $.ajax({
                     type: "GET",
-                    url: "/flight/data/modal",
+                    url: "/flight/data/departure/modal",
                     headers: {
                         Accept: "application/json",
                     },
@@ -214,17 +199,12 @@ $(document).ready(function () {
                         id: newNum,
                     },
                     success: function (data) {
-                        //console.log(data);
-
                         data.forEach(function (row) {
                             timeStart = new Date(row.schedule_time);
                             timeEnd = new Date(row.schedule_time);
-                            //group = parseInt(row.checkin_desk);
-
                             start = new Date(
                                 timeStart.setHours(timeStart.getHours() - 3)
                             );
-
                             end = new Date(
                                 timeEnd.setMinutes(timeEnd.getMinutes() - 30)
                             );

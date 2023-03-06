@@ -9,13 +9,19 @@ class ExportFlightData implements WithMultipleSheets
 {
     use Exportable;
 
-    protected $domestik;
-    protected $internasional;
+    protected $domestikDeparture;
+    protected $internasionalDeparture;
+    protected $domestikArrival;
 
-    public function __construct(array $domestik, array $internasional)
+    protected $internasionalArrival;
+
+    public function __construct(array $domestikDeparture, array $internasionalDeparture, array $domestikArrival, array $internasionalArrival)
     {
-        $this->domestik = $domestik;
-        $this->internasional = $internasional;
+        $this->domestikDeparture = $domestikDeparture;
+        $this->internasionalDeparture = $internasionalDeparture;
+        $this->domestikArrival = $domestikArrival;
+        $this->internasionalArrival = $internasionalArrival;
+
     }
 
     /**
@@ -24,8 +30,10 @@ class ExportFlightData implements WithMultipleSheets
     public function sheets(): array
     {
         $sheets = [
-            new FlightExportDomestic($this->domestik),
-            new FlightExportInternational($this->internasional)
+            new DepartureInternational($this->internasionalDeparture),
+            new DepartureDomestic($this->domestikDeparture),
+            new ArrivalInternational($this->internasionalArrival),
+            new ArrivalDomestic($this->domestikArrival)
         ];
 
         return $sheets;

@@ -37,11 +37,16 @@
   <div class="container-fluid">
     <ul class="nav nav-tabs">
       <li class="nav-item">
-        <a class="nav-link active" href="/flight/domestik">Domestik</a>
+        <a class="nav-link" href="/flight/departure/domestik">Departure Domestik</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link active" href="#">Internasional</a>
+        <a class="nav-link" href="#">Departure Internasional</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="/flight/arrival/domestik">Arrival Domestik</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="/flight/arrival/internasional">Arrival Internasional</a>
       <li class="nav-item">
         <a href="/flight/add/internasional" class="btn">Add Data</a>
       </li>
@@ -77,6 +82,7 @@
       </div>
     </div>
     <div class="block">
+      <h2>International Departure</h2>
       <label class="interaction" for="dateFrom">Date From:</label>
       <input class="interaction" type="datetime-local" class="form-control" id="dateFrom" name="dateFrom"><br>
       <label class="interaction" for="dateTo">Date To:</label>
@@ -147,6 +153,6 @@
   </div>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-  <script src="{{asset('JS')}}/chartint.js"></script>
+  <script src="{{asset('JS')}}/InternasionalDeparture.js"></script>
 
 </body>

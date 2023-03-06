@@ -6,7 +6,7 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
-class FlightExportInternational implements FromArray, WithHeadings, WithTitle
+class DepartureInternational implements FromArray, WithHeadings, WithTitle
 {
     protected $internasional;
 

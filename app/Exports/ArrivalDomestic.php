@@ -6,7 +6,7 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
-class FlightExportDomestic implements FromArray, WithHeadings, WithTitle
+class ArrivalDomestic implements FromArray, WithHeadings, WithTitle
 {
     protected $domestik;
 
@@ -24,20 +24,19 @@ class FlightExportDomestic implements FromArray, WithHeadings, WithTitle
 
     public function title(): string
     {
-        return 'Domestic Departure';
+        return 'Domestic Arrival';
     }
+
 
     public function headings(): array
     {
         return [
             'Flight Number',
-            'Destination',
+            'Origin',
             'Type',
             'Schedule Time',
-            'Desk',
-            'Gate',
-            'Total Pax',
-            'Jumlah CIC',
+            'Belt',
+
         ];
     }
 }
