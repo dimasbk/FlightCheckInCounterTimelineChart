@@ -7,6 +7,9 @@
   <link href="https://unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet"
     type="text/css" />
   <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@grabzit/js@3.5.2/grabzit.min.js"></script>
+  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+
   <style>
     .block {
       margin-top: 20px;
@@ -47,6 +50,13 @@
       </li>
       <li class="nav-item">
         <a class="nav-link " href="/flight/arrival/internasional">Arrival Internasional</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/flight/gate/domestik">Departure Gate Domestik</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/flight/gate/internasional">Departure Gate Internasional</a>
+      </li>
       <li class="nav-item">
         <a href="/flight/add/domestik" class="btn">Add Data</a>
       </li>
@@ -158,6 +168,6 @@
   <script src="http://cdn.jsdelivr.net/g/filesaver.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dom-to-pdf@0.3.2/index.min.js"></script>
   <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.0/jspdf.min.js"></script>
   <script src="{{asset('JS')}}/DomestikDeparture.js"></script>
+  <script src="{{asset('JS')}}/lib/dom-to-image.min.js"></script>
 </body>

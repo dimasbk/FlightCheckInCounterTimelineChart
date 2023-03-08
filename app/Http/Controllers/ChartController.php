@@ -11,6 +11,7 @@ use App\Models\DepartureFlightModel;
 use App\Models\CheckinDeskModel;
 use App\Models\AirlineModel;
 use App\Models\AirportCodeModel;
+use App\Models\GateModel;
 use App\Imports\ImportFlightData;
 use Maatwebsite\Excel\Facades\Excel;
 use \PDF;
@@ -25,6 +26,16 @@ class ChartController extends Controller
     public function departureInternasional()
     {
         return view('chartintDeparture');
+    }
+
+    public function gateDomestik()
+    {
+        return view('chartdomGate');
+    }
+
+    public function gateInternasional()
+    {
+        return view('chartintGate');
     }
 
     public function arrivalDomestik()
@@ -177,6 +188,51 @@ class ChartController extends Controller
 
         $belt = BeltModel::where('type', 'Internasional')->get();
         $data = compact(['flightData', ['belt']]);
+        return $data;
+    }
+
+    public function gateDataDomestik(Request $request)
+    {
+
+
+        $from = date('Y-m-d H:i:s', $request->from);
+
+        $to = date('Y-m-d H:i:s', $request->to);
+        $flightData = DepartureFlightModel::join('tb_airline', 'tb_departure.id_airline', '=', 'tb_airline.id_airline')
+            ->join('tb_airport', 'tb_departure.id_destination', '=', 'tb_airport.id_aiport')
+            ->whereBetween('schedule_time', [$from, $to])
+            ->where("flightType", 'Domestik')
+            ->get()
+            ->toArray();
+        //dd($to);    
+        $gate = GateModel::where('type', 'Domestik')->get();
+        $data = compact(['flightData', ['gate']]);
+        //dd($data);
+        return $data;
+
+    }
+    public function gateDataInternasional(Request $request)
+    {
+        /*
+        $startTime = new \DateTime('midnight');
+        $from = $startTime->format('Y-m-d H:i:s');
+        $endTime = new \DateTime('midnight');
+        $to = $endTime->setTime(23, 59, 00)->format('Y-m-d H:i:s');
+        */
+
+        $from = date('Y-m-d H:i:s', $request->from);
+
+        $to = date('Y-m-d H:i:s', $request->to);
+        $flightData = DepartureFlightModel::join('tb_airline', 'tb_departure.id_airline', '=', 'tb_airline.id_airline')
+            ->join('tb_airport', 'tb_departure.id_destination', '=', 'tb_airport.id_aiport')
+            ->join('tb_checkin_desk', 'tb_departure.id_checkin_desk', '=', 'tb_checkin_desk.id')
+            //->orderByRaw('CAST(checkin_desk AS UNSIGNED)=0, CAST(checkin_desk AS UNSIGNED), LEFT(checkin_desk,1),CAST(MID(checkin_desk,2) AS UNSIGNED)')
+            ->whereBetween('schedule_time', [$from, $to])
+            ->where("flightType", 'Internasional')
+            ->get()
+            ->toArray();
+        $gate = GateModel::where('type', 'Internasional')->get();
+        $data = compact(['flightData', ['gate']]);
         return $data;
     }
 

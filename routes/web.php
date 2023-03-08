@@ -23,6 +23,8 @@ Route::get('/flight/departure/domestik', [ChartController::class, 'departureDome
 Route::get('/flight/departure/internasional', [ChartController::class, 'departureInternasional']);
 Route::get('/flight/arrival/domestik', [ChartController::class, 'arrivalDomestik']);
 Route::get('/flight/arrival/internasional', [ChartController::class, 'arrivalInternasional']);
+Route::get('/flight/gate/domestik', [ChartController::class, 'gateDomestik']);
+Route::get('/flight/gate/internasional', [ChartController::class, 'gateInternasional']);
 
 Route::get('/flight/add/domestik', [ChartController::class, 'addDataDomestik']);
 Route::get('/flight/add/internasional', [ChartController::class, 'addDataInternasional']);
@@ -36,6 +38,9 @@ Route::get('/flight/data/departure/modal', [ChartController::class, 'modal']);
 Route::get('/flight/data/arrival/modal', [ChartController::class, 'modalArrival']);
 Route::get('/flight/data/domestik', [ChartController::class, 'flightDataDomestik']);
 Route::get('/flight/data/internasional', [ChartController::class, 'flightDataInternasional']);
+
+Route::get('/flight/data/gate/domestik', [ChartController::class, 'gateDataDomestik']);
+Route::get('/flight/data/gate/internasional', [ChartController::class, 'gateDataInternasional']);
 
 Route::get('/flight/data/arrival/domestik', [ChartController::class, 'arrivalDataDomestik']);
 Route::get('/flight/data/arrival/internasional', [ChartController::class, 'arrivalDataInternasional']);

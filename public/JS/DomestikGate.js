@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    var jsPDF = window.jspdf.jsPDF;
     var container = document.getElementById("newFlightData");
     var output = new vis.DataSet();
     var groups = new vis.DataSet();
@@ -48,7 +47,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: "GET",
-            url: "/flight/data/search",
+            url: "/flight/data/gate/search",
             headers: {
                 Accept: "application/json",
             },
@@ -59,24 +58,12 @@ $(document).ready(function () {
                 to: timestampTo,
             },
             success: function (result) {
-                let resultArray = [];
-                result.forEach(function (row) {
-                    //resultArray.push(row.)
-                    desk_id = row.id_checkin_desk;
-                    var deskArray = checkinDesk.split(",").map(Number);
-                    let number = 10;
-                    deskArray.forEach(function () {
-                        let itemId = `${row.id_departure}${number}`;
-                        resultArray.push(itemId);
-                        number++;
-                    });
-                });
-                if (!resultArray.length) {
+                if (!result) {
                     alert("Data Tidak Ditemukan");
                 } else {
-                    resultArray.toString();
-                    console.log(resultArray);
-                    timeline.focus(resultArray);
+                    alert(result.toString());
+                    console.log(result);
+                    timeline.focus(result.toString());
                 }
             },
             error: function (error) {
@@ -88,7 +75,7 @@ $(document).ready(function () {
     function call(from, to) {
         $.ajax({
             type: "GET",
-            url: "/flight/data/domestik",
+            url: "/flight/data/gate/domestik",
             headers: {
                 Accept: "application/json",
             },
@@ -107,97 +94,52 @@ $(document).ready(function () {
         });
     }
 
-    $("#pdf").click(function () {
-        /*
-        let currentDate = new Date().toJSON().slice(0, 10);
-        GrabzIt("NTIxNDMwMzI5ZDIzNDJjY2I4YjNkZjc0MGMyZTY4Yjc=")
-            .ConvertPage({
-                target: "#newFlightData",
-                format: "pdf",
-                download: 1,
-                filename: "FlightScheduleDomestik" + currentDate + ".pdf",
-                //orientation: "Landscape",
-            })
-            .Create();
-            */
-        /*
-        var doc = new jsPDF();
-        var doc = new jsPDF("l", "mm", [1200, 1210]);
-
-        var pdfjs = document.querySelector(".vis-left");
-
-        // Convert HTML to PDF in JavaScript
-        doc.html(pdfjs, {
-            callback: function (doc) {
-                doc.save("output.pdf");
-            },
-            x: 10,
-            y: 10,
-        });
-        */
-        var node = document.querySelector(".vis-left");
-
-        domtoimage
-            .toBlob(document.getElementById("newFlightData"))
-            .then(function (blob) {
-                window.saveAs(blob, "my-node.png");
-            });
-    });
-
     function Chart(data) {
-        var dataCounter = data.counter;
+        var dataGate = data.gate;
         var dataSchedule = data.flightData;
-        dataCounter.forEach(function (row) {
-            groups.add({ id: row.id, content: "Counter " + row.checkin_desk });
+        dataGate.forEach(function (row) {
+            groups.add({ id: row.id, content: "Gate " + row.gate });
         });
+
+        // create a dataset with items
 
         dataSchedule.forEach(function (row) {
-            timeStart = new Date(row.schedule_time);
+            start = new Date(row.schedule_time);
             timeEnd = new Date(row.schedule_time);
-            start = new Date(timeStart.setHours(timeStart.getHours() - 3));
-            end = new Date(timeEnd.setMinutes(timeEnd.getMinutes() - 30));
-            checkinDesk = row.id_checkin_desk;
-            var checkinDeskArray = checkinDesk.split(",").map(Number);
-            let number = 10;
+            //group = parseInt(row.checkin_desk);
 
-            checkinDeskArray.forEach(function (itemData) {
-                let itemId = `${row.id_departure}${number}`;
-                items.add({
-                    id: itemId,
-                    group: itemData,
-                    content: row.flight_number,
-                    start: start,
-                    end: end,
-                    style:
-                        "background-color:" + row.chartColor + "; color: white",
-                });
-                number++;
+            end = new Date(timeEnd.setMinutes(timeEnd.getMinutes() + 30));
+            items.add({
+                id: row.id_arrival,
+                group: row.gate,
+                content: row.flight_number,
+                start: start,
+                end: end,
+                style: "background-color:" + row.chartColor + "; color: white",
             });
 
-            var desk = checkinDesk.split(",").map(Number);
-            deskFirst = desk[0];
-            deskLast = desk[desk.length - 1];
-            deskId = deskFirst + "-" + deskLast;
             output.add({
                 flightNumber: row.flight_number,
-                destination: row.airport_code,
+                origin: row.airport_code,
                 airplaneType: row.airplane_type,
                 scheduleTime: row.schedule_time,
-                checkinDeskId: deskId,
                 gate: row.gate,
-                pax: row.pax,
-                cic: row.cic,
             });
         });
+
+        console.log(items);
+        // create visualization
 
         let itemsArray = [];
         itemsArray = output.get();
         if (itemsArray.length === 0) {
             const link = document.getElementById("downloadLink");
             link.removeAttribute("href");
+
             link.textContent = "No Data";
         } else {
             const array = [Object.keys(itemsArray[0])].concat(itemsArray);
+
             let array1 = array
                 .map((it) => {
                     return Object.values(it).toString();
@@ -218,33 +160,34 @@ $(document).ready(function () {
                 "FlightScheduleDomestik" + currentDate + ".csv"
             );
             link.textContent = "Export to CSV";
+
+            //document.querySelector("#download").append(link);
         }
 
         timeline.on("click", function (properties) {
             if (properties.item) {
                 // An item was clicked, get the item from dataset
                 const item = items.get(properties.item);
-                let x = item.id;
-                const newNum = Number(x.toString().slice(0, -2));
-                console.log(newNum);
                 $.ajax({
                     type: "GET",
-                    url: "/flight/data/departure/modal",
+                    url: "/flight/data/arrival/modal",
                     headers: {
                         Accept: "application/json",
                     },
                     data: {
-                        id: newNum,
+                        id: item.id,
                     },
                     success: function (data) {
+                        console.log(data);
+
                         data.forEach(function (row) {
-                            timeStart = new Date(row.schedule_time);
+                            start = new Date(row.schedule_time);
+                            //group = parseInt(row.checkin_desk);
                             timeEnd = new Date(row.schedule_time);
-                            start = new Date(
-                                timeStart.setHours(timeStart.getHours() - 3)
-                            );
+                            //group = parseInt(row.checkin_desk);
+
                             end = new Date(
-                                timeEnd.setMinutes(timeEnd.getMinutes() - 30)
+                                timeEnd.setMinutes(timeEnd.getMinutes() + 30)
                             );
                             document.getElementById("flightNumber").innerHTML =
                                 row.flight_number;
@@ -253,12 +196,8 @@ $(document).ready(function () {
                             document.getElementById("toDate").innerHTML = end;
                             document.getElementById("airline").innerHTML =
                                 row.airline;
-                            document.getElementById("gate").innerHTML =
+                            document.getElementById("Gate").innerHTML =
                                 row.gate;
-                            document.getElementById("flightDest").innerHTML =
-                                row.airport_code;
-                            document.getElementById("flightType").innerHTML =
-                                row.flightType;
                             $("#detailModal").modal("show");
                         });
                     },

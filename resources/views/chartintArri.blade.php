@@ -50,6 +50,12 @@
                 <a class="nav-link active" href="#">Arrival Internasional</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="/flight/gate/domestik">Departure Gate Domestik</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/flight/gate/internasional">Departure Gate Internasional</a>
+            </li>
+            <li class="nav-item">
                 <a href="/flight/add/internasional" class="btn">Add Data</a>
             </li>
             <li>
