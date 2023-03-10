@@ -61,9 +61,7 @@ $(document).ready(function () {
                 if (!result) {
                     alert("Data Tidak Ditemukan");
                 } else {
-                    alert(result.toString());
-                    console.log(result);
-                    timeline.focus(result.toString());
+                    timeline.focus(parseInt(result));
                 }
             },
             error: function (error) {
@@ -110,7 +108,7 @@ $(document).ready(function () {
 
             end = new Date(timeEnd.setMinutes(timeEnd.getMinutes() + 30));
             items.add({
-                id: row.id_arrival,
+                id: row.id_departure,
                 group: row.gate,
                 content: row.flight_number,
                 start: start,
@@ -170,7 +168,7 @@ $(document).ready(function () {
                 const item = items.get(properties.item);
                 $.ajax({
                     type: "GET",
-                    url: "/flight/data/arrival/modal",
+                    url: "/flight/data/departure/modal",
                     headers: {
                         Accept: "application/json",
                     },
@@ -196,8 +194,12 @@ $(document).ready(function () {
                             document.getElementById("toDate").innerHTML = end;
                             document.getElementById("airline").innerHTML =
                                 row.airline;
-                            document.getElementById("Gate").innerHTML =
+                            document.getElementById("gate").innerHTML =
                                 row.gate;
+                            document.getElementById("flightDest").innerHTML =
+                                row.airport_code;
+                            document.getElementById("flightType").innerHTML =
+                                row.type;
                             $("#detailModal").modal("show");
                         });
                     },

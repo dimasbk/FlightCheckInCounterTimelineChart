@@ -155,6 +155,17 @@ class ChartController extends Controller
         return $data;
     }
 
+    public function searchGate(Request $request)
+    {
+        $from = date('Y-m-d H:i:s', $request->from);
+
+        $to = date('Y-m-d H:i:s', $request->to);
+        $data = DepartureFlightModel::select('id_departure', 'flight_number', 'id_checkin_desk')
+            ->where('flight_number', $request->param)->where('flightType', $request->type)->whereBetween('schedule_time', [$from, $to])->value('id_departure');
+
+        return $data;
+    }
+
     public function arrivalDataDomestik(Request $request)
     {
         $from = date('Y-m-d H:i:s', $request->from);
@@ -377,8 +388,4 @@ class ChartController extends Controller
         return Excel::download($export, 'FlightData' . $request->exportDate . '.xlsx');
     }
 
-    public function pdf()
-    {
-        $pdf = PDF::loadView('resume');
-    }
 }

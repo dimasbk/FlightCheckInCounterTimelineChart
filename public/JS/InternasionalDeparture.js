@@ -32,7 +32,7 @@ $(document).ready(function () {
         margin: {
             item: { horizontal: 0, vertical: 0 },
         },
-        zoomKey: "ctrlKey",
+        zoomKey: "shiftKey",
         //autoResize: false,
     };
 

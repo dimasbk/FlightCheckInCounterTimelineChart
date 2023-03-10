@@ -61,9 +61,7 @@ $(document).ready(function () {
                 if (!result) {
                     alert("Data Tidak Ditemukan");
                 } else {
-                    alert(result.toString());
-                    console.log(result);
-                    timeline.focus(result.toString());
+                    timeline.focus(parseInt(result));
                 }
             },
             error: function (error) {

@@ -61,9 +61,7 @@ $(document).ready(function () {
                 if (!result) {
                     alert("Data Tidak Ditemukan");
                 } else {
-                    alert(result.toString());
-                    console.log(result);
-                    timeline.focus(result.toString());
+                    timeline.focus(parseInt(result));
                 }
             },
             error: function (error) {
@@ -107,10 +105,9 @@ $(document).ready(function () {
             start = new Date(row.schedule_time);
             timeEnd = new Date(row.schedule_time);
             //group = parseInt(row.checkin_desk);
-
             end = new Date(timeEnd.setMinutes(timeEnd.getMinutes() + 30));
             items.add({
-                id: row.id_arrival,
+                id: row.id_departure,
                 group: row.gate,
                 content: row.flight_number,
                 start: start,
@@ -168,9 +165,10 @@ $(document).ready(function () {
             if (properties.item) {
                 // An item was clicked, get the item from dataset
                 const item = items.get(properties.item);
+                console.log(item.id);
                 $.ajax({
                     type: "GET",
-                    url: "/flight/data/arrival/modal",
+                    url: "/flight/data/departure/modal",
                     headers: {
                         Accept: "application/json",
                     },
@@ -181,6 +179,7 @@ $(document).ready(function () {
                         console.log(data);
 
                         data.forEach(function (row) {
+                            console.log(row.gate);
                             start = new Date(row.schedule_time);
                             //group = parseInt(row.checkin_desk);
                             timeEnd = new Date(row.schedule_time);
@@ -196,8 +195,12 @@ $(document).ready(function () {
                             document.getElementById("toDate").innerHTML = end;
                             document.getElementById("airline").innerHTML =
                                 row.airline;
-                            document.getElementById("Gate").innerHTML =
+                            document.getElementById("gate").innerHTML =
                                 row.gate;
+                            document.getElementById("flightDest").innerHTML =
+                                row.airport_code;
+                            document.getElementById("flightType").innerHTML =
+                                row.type;
                             $("#detailModal").modal("show");
                         });
                     },

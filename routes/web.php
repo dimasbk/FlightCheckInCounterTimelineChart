@@ -31,6 +31,7 @@ Route::get('/flight/add/internasional', [ChartController::class, 'addDataInterna
 Route::post('/flight/insert', [ChartController::class, 'insert']);
 Route::get('/flight/data/search', [ChartController::class, 'search']);
 Route::get('/flight/data/arrival/search', [ChartController::class, 'searchArrival']);
+Route::get('/flight/data/gate/search', [ChartController::class, 'searchGate']);
 //Route::get('/flight/desk', [ChartController::class, 'desk']);
 Route::get('/flight/data/counter', [ChartController::class, 'counter']);
 Route::get('/flight/data/modal', [ChartController::class, 'modal']);
