@@ -149,6 +149,10 @@
                             <p class="data" id="gate"></p>
                         </div>
                         <div>
+                            <p class="data">Pax : </p>
+                            <p class="data" id="pax"></p>
+                        </div>
+                        <div>
                             <p class="data">Flight Destination : </p>
                             <p class="data" id="flightDest"></p>
                         </div>

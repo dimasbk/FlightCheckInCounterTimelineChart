@@ -264,10 +264,12 @@ $(document).ready(function () {
                                 row.airline;
                             document.getElementById("gate").innerHTML =
                                 row.gate;
+                            document.getElementById("pax").innerHTML = row.pax;
                             document.getElementById("flightDest").innerHTML =
                                 row.airport_code;
                             document.getElementById("flightType").innerHTML =
                                 row.flightType;
+
                             $("#detailModal").modal("show");
                         });
                     },

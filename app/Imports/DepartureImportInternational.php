@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use App\Models\AirlineModel;
 use App\Models\AirportCodeModel;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
+use App\Models\GateModel;
 
 class DepartureImportInternational implements ToModel, WithStartRow, WithCalculatedFormulas
 {
@@ -40,6 +41,8 @@ class DepartureImportInternational implements ToModel, WithStartRow, WithCalcula
         $id_checkin_desk = implode(",", $array);
 
         $date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[3]);
+        $gate = GateModel::where('gate', $row[10])->value('id');
+        //dd($gate);
         //dd($date);
         $data = DepartureFlightModel::where('flight_number', $row[0])->where('schedule_time', $date)->first();
         if ($data === null) {
@@ -50,7 +53,7 @@ class DepartureImportInternational implements ToModel, WithStartRow, WithCalcula
                 'id_airline' => $airline,
                 'schedule_time' => $date,
                 'id_checkin_desk' => $id_checkin_desk,
-                'gate' => $row[10],
+                'gate' => $gate,
                 'pax' => $row[30],
                 'cic' => $row[31],
                 'flightType' => "Internasional"
