@@ -139,6 +139,10 @@
                             <p class="data" id="airline"></p>
                         </div>
                         <div>
+                            <p class="data">Origin : </p>
+                            <p class="data" id="origin"></p>
+                        </div>
+                        <div>
                             <p class="data">Belt : </p>
                             <p class="data" id="Belt"></p>
                         </div>

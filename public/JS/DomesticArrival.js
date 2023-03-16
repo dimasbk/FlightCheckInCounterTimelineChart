@@ -194,6 +194,8 @@ $(document).ready(function () {
                             document.getElementById("toDate").innerHTML = end;
                             document.getElementById("airline").innerHTML =
                                 row.airline;
+                            document.getElementById("origin").innerHTML =
+                                row.airport_code;
                             document.getElementById("Belt").innerHTML =
                                 row.belt;
                             $("#detailModal").modal("show");

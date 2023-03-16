@@ -151,6 +151,10 @@
               <p class="data" id="pax"></p>
             </div>
             <div>
+              <p class="data">CIC : </p>
+              <p class="data" id="cic"></p>
+            </div>
+            <div>
               <p class="data">Flight Destination : </p>
               <p class="data" id="flightDest"></p>
             </div>

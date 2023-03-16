@@ -256,6 +256,7 @@ $(document).ready(function () {
                             document.getElementById("gate").innerHTML =
                                 row.gate;
                             document.getElementById("pax").innerHTML = row.pax;
+                            document.getElementById("cic").innerHTML = row.cic;
                             document.getElementById("flightDest").innerHTML =
                                 row.airport_code;
                             document.getElementById("flightType").innerHTML =
