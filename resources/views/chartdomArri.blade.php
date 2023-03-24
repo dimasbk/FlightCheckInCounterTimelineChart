@@ -31,6 +31,41 @@
             overflow-y: hidden;
             width: 100%;
         }
+
+        .vis-item.duplicate {
+            border-color: red;
+            animation: blink 1s linear infinite;
+        }
+
+        @keyframes blink {
+            0% {
+                border-color: red;
+            }
+
+            16.666% {
+                border-color: orange;
+            }
+
+            33.333% {
+                border-color: yellow;
+            }
+
+            50% {
+                border-color: green;
+            }
+
+            66.666% {
+                border-color: blue;
+            }
+
+            83.333% {
+                border-color: indigo;
+            }
+
+            100% {
+                border-color: violet;
+            }
+        }
     </style>
 </head>
 

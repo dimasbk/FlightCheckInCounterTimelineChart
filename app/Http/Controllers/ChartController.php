@@ -15,6 +15,7 @@ use App\Models\GateModel;
 use App\Imports\ImportFlightData;
 use Maatwebsite\Excel\Facades\Excel;
 use \PDF;
+use DB;
 
 class ChartController extends Controller
 {
@@ -172,15 +173,49 @@ class ChartController extends Controller
 
         $to = date('Y-m-d H:i:s', $request->to);
 
+        $arrayID = [];
+
+        $duplicates = ArrivalFlightModel::select('belt', 'schedule_time')->where('flightType', 'Domestik')
+            ->groupBy('belt', 'schedule_time')
+            ->having(DB::raw('count(id_arrival)'), '>', 1)
+            ->whereBetween('schedule_time', [$from, $to])
+            ->get()->toArray();
+
+        for ($x = 0; $x < count($duplicates); $x++) {
+            $beltDup = $duplicates[$x]['belt'];
+            $timeDup = $duplicates[$x]['schedule_time'];
+            $id = ArrivalFlightModel::where('belt', $beltDup)->where('schedule_time', $timeDup)->where('flightType', 'Domestik')->get()->toArray();
+            for ($y = 0; $y < count($id); $y++) {
+                array_push($arrayID, $id[$y]['id_arrival']);
+            }
+        }
+
         $flightData = ArrivalFlightModel::join('tb_airline', 'tb_arrival.id_airline', '=', 'tb_airline.id_airline')
             ->join('tb_airport', 'tb_arrival.id_origin', '=', 'tb_airport.id_aiport')
+            ->where(function ($query) use ($arrayID) {
+                for ($q = 0; $q < count($arrayID); $q++) {
+                    $query->Where('id_arrival', '!=', $arrayID[$q]);
+                }
+            })
             ->whereBetween('schedule_time', [$from, $to])
             ->where("flightType", 'Domestik')
-            ->get()
-            ->toArray();
+            ->get()->toArray();
+
+        $duplicateArray = [];
+
+        for ($z = 0; $z < count($arrayID); $z++) {
+            $flightData1 = ArrivalFlightModel::join('tb_airline', 'tb_arrival.id_airline', '=', 'tb_airline.id_airline')
+                ->join('tb_airport', 'tb_arrival.id_origin', '=', 'tb_airport.id_aiport')
+                ->where('id_arrival', '=', $arrayID[$z])
+                ->whereBetween('schedule_time', [$from, $to])
+                ->where("flightType", 'Domestik')
+                ->get()->toArray();
+
+            array_push($duplicateArray, $flightData1);
+        }
 
         $belt = BeltModel::where('type', 'Domestik')->get();
-        $data = compact(['flightData', ['belt']]);
+        $data = compact(['flightData'], ['belt'], ['duplicateArray']);
         return $data;
     }
 
@@ -190,15 +225,49 @@ class ChartController extends Controller
 
         $to = date('Y-m-d H:i:s', $request->to);
 
+        $arrayID = [];
+
+        $duplicates = ArrivalFlightModel::select('belt', 'schedule_time')->where('flightType', 'Internasional')
+            ->groupBy('belt', 'schedule_time')
+            ->having(DB::raw('count(id_arrival)'), '>', 1)
+            ->whereBetween('schedule_time', [$from, $to])
+            ->get()->toArray();
+
+        for ($x = 0; $x < count($duplicates); $x++) {
+            $beltDup = $duplicates[$x]['belt'];
+            $timeDup = $duplicates[$x]['schedule_time'];
+            $id = ArrivalFlightModel::where('belt', $beltDup)->where('schedule_time', $timeDup)->where('flightType', 'Internasional')->get()->toArray();
+            for ($y = 0; $y < count($id); $y++) {
+                array_push($arrayID, $id[$y]['id_arrival']);
+            }
+        }
+
         $flightData = ArrivalFlightModel::join('tb_airline', 'tb_arrival.id_airline', '=', 'tb_airline.id_airline')
             ->join('tb_airport', 'tb_arrival.id_origin', '=', 'tb_airport.id_aiport')
+            ->where(function ($query) use ($arrayID) {
+                for ($q = 0; $q < count($arrayID); $q++) {
+                    $query->Where('id_arrival', '!=', $arrayID[$q]);
+                }
+            })
             ->whereBetween('schedule_time', [$from, $to])
             ->where("flightType", 'Internasional')
-            ->get()
-            ->toArray();
+            ->get()->toArray();
+
+        $duplicateArray = [];
+
+        for ($z = 0; $z < count($arrayID); $z++) {
+            $flightData1 = ArrivalFlightModel::join('tb_airline', 'tb_arrival.id_airline', '=', 'tb_airline.id_airline')
+                ->join('tb_airport', 'tb_arrival.id_origin', '=', 'tb_airport.id_aiport')
+                ->where('id_arrival', '=', $arrayID[$z])
+                ->whereBetween('schedule_time', [$from, $to])
+                ->where("flightType", 'Internasional')
+                ->get()->toArray();
+
+            array_push($duplicateArray, $flightData1);
+        }
 
         $belt = BeltModel::where('type', 'Internasional')->get();
-        $data = compact(['flightData', ['belt']]);
+        $data = compact(['flightData'], ['belt'], ['duplicateArray']);
         return $data;
     }
 
@@ -258,15 +327,25 @@ class ChartController extends Controller
             ->join('tb_airport', 'tb_departure.id_destination', '=', 'tb_airport.id_aiport')
             ->whereBetween('schedule_time', [$from, $to])
             ->where("flightType", 'Domestik')
-            ->get()
-            ->toArray();
+            ->get();
         //dd($to);    
         $counter = CheckinDeskModel::where('type', 'Domestik')->get();
+
+        for ($y = 0; $y < count($flightData); $y++) {
+            $cic = ceil($flightData[$y]['cic']);
+            $idArray = (int) $flightData[$y]['id_checkin_desk'];
+            $checkin = [];
+            for ($x = 0; $x < $cic; $x++) {
+                array_push($checkin, $idArray);
+                $idArray++;
+            }
+            $flightData[$y]['id_checkin_desk'] = implode(",", $checkin);
+        }
         $data = compact(['flightData', ['counter']]);
-        //dd($data);
         return $data;
 
     }
+
     public function flightDataInternasional(Request $request)
     {
         /*
@@ -386,6 +465,11 @@ class ChartController extends Controller
         $export = new ExportFlightData($arrayDomestikDeparture, $arrayInternasionalDeparture, $arrayDomestikArrival, $arrayInternasionalArrival);
 
         return Excel::download($export, 'FlightData' . $request->exportDate . '.xlsx');
+    }
+
+    public function gantt()
+    {
+        return view('svelte');
     }
 
 }

@@ -164,7 +164,7 @@ $(document).ready(function () {
                     start: start,
                     end: end,
                     style:
-                        "background-color:" + row.chartColor + "; color: white",
+                        "background-color:" + row.chartColor + "; color: black",
                 });
                 number++;
             });
@@ -174,7 +174,6 @@ $(document).ready(function () {
             deskLast = desk[desk.length - 1];
             let deskData = getIntDesk(deskFirst, deskLast);
             deskId = deskData[0] + "-" + deskData[1];
-            console.log(deskId);
             //console.log(desk);
             output.add({
                 flightNumber: row.flight_number,

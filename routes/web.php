@@ -48,3 +48,5 @@ Route::get('/flight/data/arrival/internasional', [ChartController::class, 'arriv
 Route::get('/flight/data/internasional/desk', [ChartController::class, 'desk']);
 Route::post('/flight/add/import', [ChartController::class, 'import']);
 Route::post('/flight/add/export', [ChartController::class, 'export']);
+
+Route::get('/sveltegantt', [ChartController::class, 'gantt']);

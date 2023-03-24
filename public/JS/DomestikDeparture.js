@@ -13,6 +13,7 @@ $(document).ready(function () {
             item: { horizontal: 0, vertical: 0 },
         },
         zoomKey: "shiftKey",
+        stack: false,
     };
 
     document.getElementById("dateButton").onclick = function () {
@@ -169,7 +170,8 @@ $(document).ready(function () {
                     start: start,
                     end: end,
                     style:
-                        "background-color:" + row.chartColor + "; color: white",
+                        "background-color:" + row.chartColor + "; color: black",
+                    className: "flight",
                 });
                 number++;
             });

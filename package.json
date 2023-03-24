@@ -12,6 +12,7 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
-        "dom-to-pdf": "^0.3.2"
+        "dom-to-pdf": "^0.3.2",
+        "svelte-gantt": "^4.0.9-beta"
     }
 }

@@ -32,6 +32,12 @@
       overflow-x: scroll;
       overflow-y: hidden;
       width: 100%;
+
+
+    }
+
+    .vis-item.flight {
+      border-color: black;
     }
   </style>
 </head>

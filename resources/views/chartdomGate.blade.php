@@ -34,6 +34,10 @@
             overflow-y: hidden;
             width: 100%;
         }
+
+        .vis-item.duplicate {
+            border-color: red;
+        }
     </style>
 </head>
 

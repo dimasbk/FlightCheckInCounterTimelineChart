@@ -33,7 +33,6 @@ $(document).ready(function () {
         call(timestampFrom, timestampTo);
     };
 
-    //console.log(options);
     var timeline = new vis.Timeline(container, items, groups, options);
 
     document.getElementById("searchButton").onclick = function () {
@@ -125,7 +124,6 @@ $(document).ready(function () {
             });
         });
 
-        console.log(items);
         // create visualization
 
         let itemsArray = [];
@@ -143,8 +141,6 @@ $(document).ready(function () {
                     return Object.values(it).toString();
                 })
                 .join("\n");
-
-            //console.log(array1);
 
             let currentDate = new Date().toJSON().slice(0, 10);
             const blob = new Blob([array1], {

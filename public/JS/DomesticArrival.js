@@ -95,12 +95,12 @@ $(document).ready(function () {
     function Chart(data) {
         var dataBelt = data.belt;
         var dataSchedule = data.flightData;
+        var dataDuplicate = data.duplicateArray;
         dataBelt.forEach(function (row) {
             groups.add({ id: row.id, content: "Belt " + row.belt });
         });
 
         // create a dataset with items
-
         dataSchedule.forEach(function (row) {
             start = new Date(row.schedule_time);
             timeEnd = new Date(row.schedule_time);
@@ -113,7 +113,7 @@ $(document).ready(function () {
                 content: row.flight_number,
                 start: start,
                 end: end,
-                style: "background-color:" + row.chartColor + "; color: white",
+                style: "background-color:" + row.chartColor + "; color: black",
             });
 
             output.add({
@@ -122,6 +122,34 @@ $(document).ready(function () {
                 airplaneType: row.airplane_type,
                 scheduleTime: row.schedule_time,
                 belt: row.belt,
+            });
+        });
+
+        dataDuplicate.forEach(function (data) {
+            data.forEach(function (row) {
+                start = new Date(row.schedule_time);
+                timeEnd = new Date(row.schedule_time);
+                //group = parseInt(row.checkin_desk);
+
+                end = new Date(timeEnd.setMinutes(timeEnd.getMinutes() + 30));
+                items.add({
+                    id: row.id_arrival,
+                    group: row.belt,
+                    content: row.flight_number,
+                    start: start,
+                    end: end,
+                    style:
+                        "background-color:" + row.chartColor + "; color: black",
+                    className: "duplicate",
+                });
+
+                output.add({
+                    flightNumber: row.flight_number,
+                    origin: row.airport_code,
+                    airplaneType: row.airplane_type,
+                    scheduleTime: row.schedule_time,
+                    belt: row.belt,
+                });
             });
         });
 
